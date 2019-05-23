@@ -1,0 +1,33 @@
+
+{% if page.permalink %}
+	{% assign page_menu_url = page.oldlink %}
+{% else %}
+	{% assign page_menu_url = page.url %}
+{% endif %}
+
+
+{% assign pages = site.pages | sort: 'order' %}
+
+{% for node in pages %}
+	{% if node.permalink %}
+		{% assign node_menu_url = node.oldlink %}
+	{% else %}
+		{% assign node_menu_url = node.url %}
+	{% endif %}
+
+	page.url = {{page_menu_url}}<br/>
+	menu.url = {{node_menu_url}}<br/>
+
+	{% if page_menu_url == node_menu_url %}
+		{% assign menu_item = "current" %}
+	{% elsif page_menu_url contains node_menu_url %}
+		{% assign menu_item = "parent" %}
+	{% elsif node_menu_url contains page_menu_url %}
+		{% assign menu_item = "child" %}
+	{% else %}
+		{% assign menu_item = "unrelated" %}
+	{% endif %}
+		{{menu_item}}<br/>
+	<br/>
+
+{% endfor %}
