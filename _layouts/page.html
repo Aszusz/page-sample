@@ -2,6 +2,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>{{ site.title }}</title>
+		<link rel="stylesheet" href="{{ site.baseurl }}/css/menu.css">
 	</head>
 	<body>
 		{{ page.title }}
@@ -9,6 +10,6 @@
 		{{ content }}
 		<hr />
 		Menu: <br />
-		{% include menu.html %}
+		{%- include menu.html -%}
 	</body>
 </html>

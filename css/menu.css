@@ -1,0 +1,23 @@
+div.menu_level1 {
+    margin-left: 15px;
+}
+
+div.menu_level2 {
+    margin-left: 30px;
+}
+
+div.menu_level3 {
+    margin-left: 45px;
+}
+
+div.menu_level4 {
+    margin-left: 60px;
+}
+
+div.menu_level5 {
+    margin-left: 75px;
+}
+
+div.menu_current {
+    font-weight: 600;
+}

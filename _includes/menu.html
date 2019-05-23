@@ -1,33 +1,47 @@
+{%- if page.permalink -%}
+	{%- assign page_menu_url = page.oldlink -%}
+{%- else -%}
+	{%- assign page_menu_url = page.url -%}
+{%- endif -%}
+{%- assign page_menu_depth = page_menu_url | split: "/" | size | minus: 1 -%}
 
-{% if page.permalink %}
-	{% assign page_menu_url = page.oldlink %}
-{% else %}
-	{% assign page_menu_url = page.url %}
-{% endif %}
-
-
-{% assign pages = site.pages | sort: 'order' %}
-
+{%- assign pages = site.pages | sort: order -%}
 {% for node in pages %}
-	{% if node.permalink %}
-		{% assign node_menu_url = node.oldlink %}
-	{% else %}
-		{% assign node_menu_url = node.url %}
-	{% endif %}
+	
+	{%- if node.permalink -%}
+		{%- assign node_menu_url = node.oldlink -%}
+	{%- else -%}
+		{%- assign node_menu_url = node.url -%}
+	{%- endif -%}
+	{%- assign node_menu_depth = node_menu_url | split: "/" | size | minus: 1 -%}
 
-	page.url = {{page_menu_url}}<br/>
-	menu.url = {{node_menu_url}}<br/>
+	{%- if page_menu_url == node_menu_url -%}
+		{%- assign role = "current" -%}
+	{%- elsif page_menu_url contains node_menu_url -%}
+		{%- assign role = "parent" -%}
+	{%- elsif node_menu_url contains page_menu_url -%}
+		{%- assign tmp = page_menu_depth | plus: 1 -%}
+		{%- if tmp == node_menu_depth -%}
+			{%- assign role = "child" -%}
+		{%- else -%}
+			{%- assign role = "other" -%}
+		{%- endif -%}		
+	{%- else -%}
+		{%- capture result -%}
+			{%- include get-parent.html url = node_menu_url -%}
+		{%- endcapture -%}
+		{%- assign node_parent_url = result | rstrip -%}
+		{%- if page_menu_url contains node_parent_url -%}
+			{%- assign role = "cousin" -%}
+		{%- else -%}
+			{%- assign role = "other" -%}
+		{%- endif -%}
+	{%- endif -%}
 
-	{% if page_menu_url == node_menu_url %}
-		{% assign menu_item = "current" %}
-	{% elsif page_menu_url contains node_menu_url %}
-		{% assign menu_item = "parent" %}
-	{% elsif node_menu_url contains page_menu_url %}
-		{% assign menu_item = "child" %}
-	{% else %}
-		{% assign menu_item = "unrelated" %}
-	{% endif %}
-		{{menu_item}}<br/>
-	<br/>
+	{%- if role != "other" -%}
+		<div class="menu_level{{ node_menu_depth }} {% if role == "current" %}menu_current{% endif %}">
+			<a href="{{ node.url | relative_url }}">{{node.title}}</a>
+		</div>
+	{%- endif -%}	
 
 {% endfor %}
