@@ -1,0 +1,64 @@
+{%- comment -%}
+    Input: url
+    Output: N-level nested menu
+
+    This function renders recursively a nested Table of Content menu. Parent nodes are expanded. 
+    Current node is boldened. Current node's children are shown. Other nodes are skipped.
+
+    Parent
+        Sibling
+        Current*
+            Child
+            Child
+        Sibling
+
+{%- endcomment -%}
+
+{%- comment -%}
+    Pre-sort all pages by weight. If you don't include weight property in a page's front-matter 
+    the page will raise to the top of its folder, because the default weight is 0.
+{%- endcomment -%}
+{%- assign pages = site.pages | sort: "weight" -%}
+
+{%- for node in pages -%}
+
+    {%- assign node_url = node.url -%}
+
+    {%- comment -%}
+        Get node's parent.
+    {%- endcomment -%}
+    {%- capture result -%}
+        {%- include get-existing-parent.html url = node_url -%}
+    {%- endcapture -%}
+    {%- assign node_parent = result | rstrip -%}
+    
+    {%- comment -%}
+        If this level of menu is node's parent then the node needs to be rendered in this invocation.
+    {%- endcomment -%}
+    {%- if node_parent == include.url -%}
+
+        {%- comment -%}
+            If the node leads to current page then it needs to be boldened.
+        {%- endcomment -%}
+        {%- capture current -%}
+            {%- if page.url == node_url -%}
+                class="bold"
+            {%- endif -%}
+        {%- endcapture -%}
+
+        {%- comment -%}
+            Render node.
+        {%- endcomment -%}
+        <div class="menu_level">
+            <a href="{{node_url | relative_url}}" {{current}}>{{node.title}}</a><br/>
+            {%- if page.url contains node_url -%}
+                {%- comment -%}
+                    Render node's children recursively.
+                {%- endcomment -%}
+                {%- include render-menu-level.html url = node_url -%}
+            {%- endif -%}
+        </div>
+
+    {%- endif -%}
+
+{%- endfor -%}

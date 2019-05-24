@@ -1,0 +1,36 @@
+{%- comment -%}
+    Finds parent for a given url. For example if the url is "/path/to/my/page.md" parent will be "/path/to/my".
+{%- endcomment -%}
+{%- assign url_length = include.url | size -%}
+{%- assign segments = include.url | split: "/" -%}
+{%- assign last_segment_length = segments | last | size | plus: 1 -%}
+{%- assign parent_length = url_length | minus: last_segment_length -%}
+{%- assign parent = include.url | truncate: parent_length, '' -%}
+
+{%- comment -%}
+    If parent is empty return root url "/".
+{%- endcomment -%}
+{%- if parent == "" -%}
+    /
+
+{%- comment -%}
+    If parent is not empty, check if parent actually exists.
+    If yes, return parent.
+    If no, try again recursively. E.g. next invocation will test "/path/to".
+{%- endcomment -%}
+{%- else -%}
+    {% assign exists = "no" %}
+
+    {%- for page in site.pages -%}
+        {%- if page.url == parent -%}
+            {%- assign exists = "yes" -%}
+            {%- break -%}
+        {%- endif -%}
+    {%- endfor -%}
+
+    {%- if exists == "yes" -%}
+        {{parent}}
+    {%- else -%}
+        {%- include get-existing-parent.html url = parent -%}
+    {%- endif -%}
+{%- endif -%}
