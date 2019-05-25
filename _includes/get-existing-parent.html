@@ -1,5 +1,8 @@
 {%- comment -%}
-    Finds parent for a given url. For example if the url is "/path/to/my/page.md" parent will be "/path/to/my".
+    Input: url
+    Output: parent
+
+    This function finds parent for a given url. For example if the url is "/path/to/my/page.md" parent will be "/path/to/my".
 {%- endcomment -%}
 {%- assign url_length = include.url | size -%}
 {%- assign segments = include.url | split: "/" -%}
@@ -22,7 +25,7 @@
     {% assign exists = "no" %}
 
     {%- for page in site.pages -%}
-        {%- if page.url == parent -%}
+        {%- if page.url == parent or page.link == parent -%}
             {%- assign exists = "yes" -%}
             {%- break -%}
         {%- endif -%}

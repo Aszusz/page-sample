@@ -1,6 +1,0 @@
-{%- assign url_length = include.url | size -%}
-{%- assign segments = include.url | split: "/" -%}
-{%- assign last_segment_length = segments | last | size | plus: 1 -%}
-{%- assign parent_length = url_length | minus: last_segment_length -%}
-{%- assign parent = include.url | truncate: parent_length, '' -%}
-{{ parent }}

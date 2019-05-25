@@ -1,6 +1,8 @@
 ---
 layout: page
 title: Tango Title
+permalink: /index
+link: /tango
 weight: 1
 ---
 # Lorem ipsum dolor sit amet

@@ -11,8 +11,16 @@
             Child
             Child
         Sibling
-
 {%- endcomment -%}
+
+{%- comment -%}
+    If page url is "/index" due to permalink we need to smuggle somehow actual page name. I set up "link" parameter for this.
+{%- endcomment -%}
+{%- if page.permalink -%}
+    {%- assign page_url = page.link -%}
+{%- else -%}
+    {%- assign page_url = page.url -%}
+{%- endif -%}
 
 {%- comment -%}
     Pre-sort all pages by weight. If you don't include weight property in a page's front-matter 
@@ -22,7 +30,14 @@
 
 {%- for node in pages -%}
 
-    {%- assign node_url = node.url -%}
+    {%- comment -%}
+        Need to use actual page name, same trcik, this time for node.
+    {%- endcomment -%}
+    {%- if node.permalink -%}
+        {%- assign node_url = node.link -%}
+    {%- else -%}
+        {%- assign node_url = node.url -%}
+    {%- endif -%}
 
     {%- comment -%}
         Get node's parent.
@@ -41,7 +56,7 @@
             If the node leads to current page then it needs to be boldened.
         {%- endcomment -%}
         {%- capture current -%}
-            {%- if page.url == node_url -%}
+            {%- if page.url == node.url -%}
                 class="bold"
             {%- endif -%}
         {%- endcapture -%}
@@ -50,8 +65,8 @@
             Render node.
         {%- endcomment -%}
         <div class="menu_level">
-            <a href="{{node_url | relative_url}}" {{current}}>{{node.title}}</a><br/>
-            {%- if page.url contains node_url -%}
+            <a href="{{node.url | relative_url}}" {{current}}>{{node.title}}</a><br/>
+            {%- if page_url contains node_url -%}
                 {%- comment -%}
                     Render node's children recursively.
                 {%- endcomment -%}
